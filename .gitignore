@@ -1,0 +1,6 @@
+
+*.pyc
+
+Arduino/.DS_Store
+
+.DS_Store
