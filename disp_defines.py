@@ -1,12 +1,16 @@
 __author__ = 'giladfride'
 
-# General configuration
-DISP_SERVER_PORT = 50000
-MAX_MSG_LEN = 32
-CONNECTED_DISPLAYS = ["/dev/tty.usbserial-A7005O9s"]
-#CONNECTED_DISPLAYS = ["/dev/tty.JY-MCU-DevB"]
+import sys
 
-# OP Codes
-OP_DISPLAY_MSG = "DM"
-OP_DISPLAT_MSG_PARAMS_N = 1
+# General configuration
+DISP_SERVER_PORT = 50000 # display server listen port
+MAX_MSG_LEN = 32
+
+# configuration of the serial port that the display is connected to
+if sys.platform == "darwin":
+    CONNECTED_DISPLAYS = ["/dev/tty.usbserial-A7005O9s"]
+elif sys.platform.startswith("Linux"):
+    CONNECTED_DISPLAYS = ["/dev/ttyUSB0"]
+
+
 

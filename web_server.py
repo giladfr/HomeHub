@@ -6,10 +6,19 @@ import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, \
      abort, render_template, flash
 from contextlib import closing
-from urllib import urlopen
+from urllib import urlopen, urlretrieve
 import re
 import mysocket
 import disp_defines
+import os
+
+# The secret file is not included in the git repo since it contains private stuff.
+# File should contain:
+# camera_snapshot_url - a URL to a webcam JPG snapshot
+try:
+    import secret
+except ImportError:
+    print "Error - secret.py file is missing."
 
 # configuration
 DATABASE = 'flaskr.db'
@@ -54,6 +63,11 @@ def send_msg_post():
     display_msg(request.form['msg_text'])
     flash('Message sent')
     return redirect(url_for('main_menu'))
+
+@app.route('/camera1')
+def camera_view():
+    urlretrieve(secret.camera_snapshot_url,"static/snap1.jpg")
+    return render_template("camera.html")
 
 
 def get_ip_addr():

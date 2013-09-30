@@ -41,7 +41,7 @@ class HomeHub(object):
     def exec_command(self,data):
         eval("self." + data)
 
-    def disp_msg(self,msg,**kwargs):
+    def disp_msg(self,msg):
         self.lcd.clear()
         self.lcd.add_timestamp()
         self.lcd.write(msg)
