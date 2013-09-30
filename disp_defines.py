@@ -9,7 +9,7 @@ MAX_MSG_LEN = 32
 # configuration of the serial port that the display is connected to
 if sys.platform == "darwin":
     CONNECTED_DISPLAYS = ["/dev/tty.usbserial-A7005O9s"]
-elif sys.platform.startswith("Linux"):
+elif sys.platform.lower().startswith("linux"):
     CONNECTED_DISPLAYS = ["/dev/ttyUSB0"]
 
 
