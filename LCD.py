@@ -2,6 +2,7 @@ __author__ = 'giladfride'
 
 import serial
 import time
+import struct
 
 
 CMD_OP = 0xFF
@@ -9,6 +10,7 @@ CMD_CLEAR = 0x0A
 CMD_BACKLIGHT_OFF = 0xB
 CMD_BACKLIGHT_ON = 0xC
 CMD_SET_CURSOR = 0xD
+CMD_BACKLIGHT_BLINK = 0x0E
 
 
 class LCDLine(object):
@@ -28,7 +30,7 @@ class LCD(object):
             self.cur_lines.append(LCDLine())
             self.next_lines.append(LCDLine())
 
-        time.sleep(1)
+        time.sleep(2    )
 
 
 
@@ -52,8 +54,20 @@ class LCD(object):
         self.write(time.strftime(" %d/%m %H:%M:%S", time.localtime()))
         self.set_cursor(0,1)
 
+    def blink_backlight(self,dismiss_timeout_s):
+        self.ser.write(chr(CMD_OP) + chr(CMD_BACKLIGHT_BLINK) + chr(dismiss_timeout_s))
 
 
     def _cmd(self,cmd):
         self.ser.write(chr(CMD_OP) + chr(cmd))
+
+
+
+if __name__ == "__main__":
+    lcd = LCD("/dev/tty.usbserial-A7005O9s")
+    lcd.clear()
+    lcd.write("CRAPCRAP")
+    lcd.blink_backlight(10)
+    raw_input()
+
 

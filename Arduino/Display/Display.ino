@@ -16,11 +16,36 @@
 #define CMD_BACKLIGHT_OFF  	0x0B
 #define CMD_BACKLIGHT_ON  	0x0C
 #define CMD_SET_CURSOR  	0x0D
+#define CMD_BACKLIGHT_BLINK         0x0E
 
 // High level op codes
 #define CMD_CLOCK_START		0x20
 #define CMD_CLOCK_END		0x21
 
+#define btnRIGHT  0
+#define btnUP     1
+#define btnDOWN   2
+#define btnLEFT   3
+#define btnSELECT 4
+#define btnNONE   5
+int lcd_key     = 0;
+int adc_key_in  = 0;
+
+int read_LCD_buttons()
+{
+ adc_key_in = analogRead(0);   
+ if (adc_key_in > 1000) return btnNONE; 
+ if (adc_key_in < 50)   return btnRIGHT;  
+ if (adc_key_in < 195)  return btnUP; 
+ if (adc_key_in < 380)  return btnDOWN; 
+ if (adc_key_in < 555)  return btnLEFT; 
+ if (adc_key_in < 790)  return btnSELECT;    
+ 
+ return btnNONE; 
+}
+
+
+  
 
 
 // initialize the library with the numbers of the interface pins
@@ -36,6 +61,10 @@ void setup()
 	// Write welcome messege
 	lcd.print("Waiting...");
 }
+
+
+
+
 
 
 void loop()
@@ -75,6 +104,10 @@ void loop()
 					row = Serial.read();
 					lcd.setCursor(col,row);
 					break;
+                                case CMD_BACKLIGHT_BLINK:
+                                        int d = Serial.read();;
+                                        BackLightBlink(d * 1000);
+                                        break;
 					
 				}        
 				
@@ -86,3 +119,35 @@ void loop()
 		}
 	}
 }
+
+void BackLightBlink(int dismissTimeOutMs)
+{
+  int Tic = millis();
+  int Toc;
+  
+  while (true)
+  {
+    Toc = millis();
+    if ((Toc - Tic) > dismissTimeOutMs) break;
+    if (read_LCD_buttons() != btnNONE) break;    
+    digitalWrite(PIN_BACKLIGHT, LOW);
+    if (read_LCD_buttons() != btnNONE) break;
+    delay(500);
+    if (read_LCD_buttons() != btnNONE) break;
+    digitalWrite(PIN_BACKLIGHT, HIGH);
+    if (read_LCD_buttons() != btnNONE) break;
+    delay(500);
+    if (read_LCD_buttons() != btnNONE) break;
+    
+  }
+  
+  digitalWrite(PIN_BACKLIGHT, HIGH);
+  lcd.clear();
+  Serial.write("Dismissed\n");
+  
+}
+  
+  
+  
+  
+
