@@ -2,10 +2,10 @@
 #include <LiquidCrystal.h>
 
 // General defines
-#define PIN_BACKLIGHT 		10
+#define PIN_BACKLIGHT 		13
 #define CLK_LINE      		0  
-#define LCD_NUM_LINES 		2
-#define LCD_LINE_LENGTH		16
+#define LCD_NUM_LINES 		4
+#define LCD_LINE_LENGTH		20
 
 
 // general CMD op code
@@ -49,7 +49,10 @@ int read_LCD_buttons()
 
 
 // initialize the library with the numbers of the interface pins
-LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
+//LiquidCrystal lcd(8, 9, 4, 5, 6, 7); // LCD Shield
+
+LiquidCrystal lcd(7, 15, 8, 9, 10, 11, 12);// 15 is nonexistent and will free a pin
+
 void setup()
 {
 	// set up the LCD's number of columns and rows: 
@@ -104,10 +107,10 @@ void loop()
 					row = Serial.read();
 					lcd.setCursor(col,row);
 					break;
-                                case CMD_BACKLIGHT_BLINK:
-                                        int d = Serial.read();;
-                                        BackLightBlink(d * 1000);
-                                        break;
+                case CMD_BACKLIGHT_BLINK:
+                    int d = Serial.read();;
+                    BackLightBlink(d * 1000);
+                    break;
 					
 				}        
 				
