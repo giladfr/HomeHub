@@ -11,6 +11,7 @@ import re
 import mysocket
 import disp_defines
 import os
+import sensor
 
 # The secret file is not included in the git repo since it contains private stuff.
 # File should contain:
@@ -30,6 +31,7 @@ PASSWORD = 'default'
 
 app = Flask(__name__)
 app.config.from_object(__name__)
+shaked_room_sensor = sensor.Sensor()
 
 def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
@@ -52,7 +54,8 @@ def teardown_request(exception):
 
 @app.route('/')
 def main_menu():
-    return render_template("default.html")
+    temp_humid_str = "%dC %d%% Humidity" % shaked_room_sensor.get_temp_humid()
+    return render_template("default.html",shaked_climate = temp_humid_str)
 
 @app.route('/send_msg')
 def send_msg():
